@@ -5,8 +5,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.InputStream;
 import java.net.URL;
 
 public class Main extends Application {
@@ -30,6 +32,10 @@ public class Main extends Application {
         Parent root = loader.load();
 
         primaryStage.setScene(new Scene(root));
+        InputStream iconStream = getClass().getResourceAsStream("/0x55logo.png");
+        Image image = new Image(iconStream);
+        primaryStage.getIcons().add(image);
+        primaryStage.setTitle("FQ Setting App - Modbus RTU");
         primaryStage.show();
     }
 

@@ -14,8 +14,6 @@ public class Port {
 
     private SerialParameters serialParameters;
 
-
-
     public Port() {
         this.setPortList();
     }

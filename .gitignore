@@ -1,7 +1,9 @@
 # Intellij
+out/
 .idea/
 *.iml
 *.iws
+
 
 ###### Mac OS X ######
 # Folder view configuration files

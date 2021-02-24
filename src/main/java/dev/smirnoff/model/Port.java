@@ -1,5 +1,7 @@
 package dev.smirnoff.model;
 
+import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
+import com.intelligt.modbus.jlibmodbus.master.ModbusMasterFactory;
 import com.intelligt.modbus.jlibmodbus.serial.SerialParameters;
 import jssc.SerialPortList;
 
@@ -11,6 +13,8 @@ public class Port {
     private String[] portList;
 
     private SerialParameters serialParameters;
+
+
 
     public Port() {
         this.setPortList();

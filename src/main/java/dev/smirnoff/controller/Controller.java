@@ -4,6 +4,9 @@ import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMasterFactory;
 import com.intelligt.modbus.jlibmodbus.serial.SerialParameters;
 import com.intelligt.modbus.jlibmodbus.serial.SerialPort;
+import com.intelligt.modbus.jlibmodbus.serial.SerialPortFactoryJSSC;
+import com.intelligt.modbus.jlibmodbus.serial.SerialUtils;
+
 import dev.smirnoff.model.Port;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -40,7 +43,7 @@ public class Controller {
         parityList.setItems(FXCollections.observableArrayList(SerialPort.Parity.values()));
         parityList.setValue(SerialPort.Parity.NONE);
         stopBitsList.setItems(FXCollections.observableArrayList(1, 2));
-        stopBitsList.setValue(2);
+        stopBitsList.setValue(1);
         buttonClosePort.setDisable(true);
         this.findPorts();
     }
@@ -79,12 +82,15 @@ public class Controller {
         writeLog("Инициализация порта");
 
         if (port.getPortList().length > 0) {
+
             SerialParameters sp = new SerialParameters();
+            SerialUtils.setSerialPortFactory(new SerialPortFactoryJSSC());
             sp.setDevice(portList.getValue());
             sp.setBaudRate(baudRateList.getValue());
             sp.setDataBits(8);
             sp.setParity(parityList.getValue());
             sp.setStopBits(stopBitsList.getValue());
+
             port.setSerialParameters(sp);
             writeLog("Параметры инициализации: "
                     + port.getSerialParameters().getDevice() + " "
@@ -93,10 +99,13 @@ public class Controller {
                     + port.getSerialParameters().getParity() + "-" +
                     +port.getSerialParameters().getStopBits());
             try {
-                modbusMaster = ModbusMasterFactory.createModbusMasterRTU(sp);
+
+                modbusMaster = ModbusMasterFactory.createModbusMasterRTU(port.getSerialParameters());
                 modbusMaster.connect();
                 if (modbusMaster.isConnected()) {
                     buttonClosePort.setDisable(false);
+                    buttonOpenPort.setDisable(true);
+                    buttonFindPorts.setDisable(true);
                     writeLog("Порт открыт");
                 }
             } catch (RuntimeException e) {
@@ -120,6 +129,8 @@ public class Controller {
             modbusMaster.disconnect();
             if (!modbusMaster.isConnected()) {
                 buttonClosePort.setDisable(true);
+                buttonOpenPort.setDisable(false);
+                buttonFindPorts.setDisable(false);
                 writeLog("Порт закрыт");
             }
         } catch (RuntimeException e) {
